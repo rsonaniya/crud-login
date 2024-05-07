@@ -22,11 +22,18 @@ export default function Todos() {
       }
       return todo;
     });
-    axios.patch("https://rsonaniya-mock-data.onrender.com/users/" + authUser.id, { todos: newTodos }).then(() => {
-      setAuthUser({ ...authUser, todos: newTodos });
-      localStorage.setItem("authUser", JSON.stringify({ ...authUser, todos: newTodos }));
-      setTodoLoading({ ...todoLoading, doneBtn: false });
-    });
+    axios
+      .patch("https://rsonaniya-mock-data.onrender.com/users/" + authUser.id, {
+        todos: newTodos,
+      })
+      .then(() => {
+        setAuthUser({ ...authUser, todos: newTodos });
+        localStorage.setItem(
+          "authUser",
+          JSON.stringify({ ...authUser, todos: newTodos })
+        );
+        setTodoLoading({ ...todoLoading, doneBtn: false });
+      });
   };
 
   const handleStartEditing = (id) => {
@@ -57,64 +64,95 @@ export default function Todos() {
       }
       return todo;
     });
-    axios.patch("https://rsonaniya-mock-data.onrender.com/users/" + authUser.id, { todos: newTodos }).then(() => {
-      setAuthUser({ ...authUser, todos: newTodos });
-      localStorage.setItem("authUser", JSON.stringify({ ...authUser, todos: newTodos }));
-    });
+    axios
+      .patch("https://rsonaniya-mock-data.onrender.com/users/" + authUser.id, {
+        todos: newTodos,
+      })
+      .then(() => {
+        setAuthUser({ ...authUser, todos: newTodos });
+        localStorage.setItem(
+          "authUser",
+          JSON.stringify({ ...authUser, todos: newTodos })
+        );
+      });
   };
 
   const handleDeleteTask = (id) => {
     const newTodos = authUser.todos.filter((todo) => todo.todoId !== id);
-    axios.patch("https://rsonaniya-mock-data.onrender.com/users/" + authUser.id, { todos: newTodos }).then(() => {
-      setAuthUser({ ...authUser, todos: newTodos });
-      localStorage.setItem("authUser", JSON.stringify({ ...authUser, todos: newTodos }));
-    });
+    axios
+      .patch("https://rsonaniya-mock-data.onrender.com/users/" + authUser.id, {
+        todos: newTodos,
+      })
+      .then(() => {
+        setAuthUser({ ...authUser, todos: newTodos });
+        localStorage.setItem(
+          "authUser",
+          JSON.stringify({ ...authUser, todos: newTodos })
+        );
+      });
   };
 
   return (
     <div>
-      {authUser.todos.map((todo) => (
-        <div key={todo.todoId} className="d-flex justify-content-between align-items-center shadow my-2 p-3">
-          {todo.isEditing ? (
-            <>
-              <input
-                value={todo.task}
-                onChange={(e) => handleEditChange(todo.todoId, e.target.value)}
-                className="form-control"
-              />
-              <button
-                className={`btn btn-outline-success mx-1 ${loading.editBtn ? "" : "bi bi-check-lg"}`}
-                onClick={() => handleFinishEditing(todo.todoId)}
-              ></button>
-            </>
-          ) : (
-            <>
-              <div style={{ textDecoration: todo.isCompleted ? "line-through" : "" }}>{todo.task}</div>
-              <div>
+      {authUser.todos &&
+        authUser.todos.map((todo) => (
+          <div
+            key={todo.todoId}
+            className="d-flex justify-content-between align-items-center shadow my-2 p-3"
+          >
+            {todo.isEditing ? (
+              <>
+                <input
+                  value={todo.task}
+                  onChange={(e) =>
+                    handleEditChange(todo.todoId, e.target.value)
+                  }
+                  className="form-control"
+                />
                 <button
-                  className={` btn btn-outline-success mx-1 ${
-                    loading.doneBtn
-                      ? "spinner-border"
-                      : todo.isCompleted
-                      ? "bi bi-arrow-counterclockwise"
-                      : "bi bi-check-lg"
+                  className={`btn btn-outline-success mx-1 ${
+                    loading.editBtn ? "" : "bi bi-check-lg"
                   }`}
-                  onClick={() => handleCompleteTodo(todo.todoId)}
+                  onClick={() => handleFinishEditing(todo.todoId)}
                 ></button>
+              </>
+            ) : (
+              <>
+                <div
+                  style={{
+                    textDecoration: todo.isCompleted ? "line-through" : "",
+                  }}
+                >
+                  {todo.task}
+                </div>
+                <div>
+                  <button
+                    className={` btn btn-outline-success mx-1 ${
+                      loading.doneBtn
+                        ? "spinner-border"
+                        : todo.isCompleted
+                        ? "bi bi-arrow-counterclockwise"
+                        : "bi bi-check-lg"
+                    }`}
+                    onClick={() => handleCompleteTodo(todo.todoId)}
+                  ></button>
 
-                <button
-                  className="bi bi-pencil-fill btn btn-outline-warning mx-1"
-                  onClick={() => handleStartEditing(todo.todoId)}
-                ></button>
-                <button
-                  className={` btn btn-outline-danger mx-1 ${loading.dltBtn ? "spinner-border" : "bi bi-trash-fill"}`}
-                  onClick={() => handleDeleteTask(todo.todoId)}
-                ></button>
-              </div>
-            </>
-          )}
-        </div>
-      ))}
+                  <button
+                    className="bi bi-pencil-fill btn btn-outline-warning mx-1"
+                    onClick={() => handleStartEditing(todo.todoId)}
+                  ></button>
+                  <button
+                    className={` btn btn-outline-danger mx-1 ${
+                      loading.dltBtn ? "spinner-border" : "bi bi-trash-fill"
+                    }`}
+                    onClick={() => handleDeleteTask(todo.todoId)}
+                  ></button>
+                </div>
+              </>
+            )}
+          </div>
+        ))}
+      {authUser.todos.length === 0 && <h3>Add a todo to manage</h3>}
     </div>
   );
 }
